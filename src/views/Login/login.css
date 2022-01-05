@@ -1,0 +1,85 @@
+#photoBg {
+	background-image: url(https://images.unsplash.com/photo-1497215728101-856f4ea42174?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8);
+	background-size: cover;
+}
+
+.loginBox {
+	margin-top: 30%;
+}
+
+.loginTitle span {
+	color: var(--primary-color);
+	font-weight: bold;
+}
+
+.fwBold {
+	font-weight: bold;
+}
+
+.rememberLabel {
+	margin-left: 6px;
+    margin-top: 1px;
+}
+
+.forgottenPassword {
+	color: var(--primary-color);
+	font-weight: bold;
+	text-decoration: none;
+	float: right;
+	margin-top: -25px;
+}
+
+.forgottenPassword:hover {
+	color: var(--secondary-color);
+}
+
+.loginButton {
+	background-color: var(--primary-color);
+	color: #FFF;
+	font-weight: bold;
+}
+
+.loginButton {
+	background-color: var(--primary-color);
+	color: #FFF;
+	font-weight: bold;
+}
+
+.loginButton:hover {
+	color: #FFF;
+}
+
+input[type="email"], input[type="password"] {
+	background-color: #F8F8F9;
+    border: none;
+    border-radius: 8px;
+    height: 40px;
+	font-size: medium;
+}
+
+input[type="email"]:focus, input[type="password"]:focus,
+input[type="email"]:focus-visible, input[type="password"]:focus-visible,
+input[type="email"]:hover, input[type="password"]:hover {
+	background-color: #F8F8F9;
+	border: 2px solid #ECECEC;
+	box-shadow: none;
+	transition: none;
+}
+
+.footer {
+	position: absolute;
+    bottom: 35px;
+}
+
+@media (max-width: 1430px){
+    .footer {
+		max-width: 335px;
+	}
+}
+
+@media (max-width: 1540px){
+    .forgottenPassword {
+		float: unset;
+		margin-top: unset;
+	}
+}
