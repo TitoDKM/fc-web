@@ -23,6 +23,27 @@ const Students = () => {
 			.forEach(tr => table.appendChild(tr));
 	}
 
+	const handleSearch = (e) => {
+		const filter = e.target.value.toLowerCase();
+		let students = document.getElementById('table-body').getElementsByTagName('tr');
+
+		for(let i = 0; i < students.length; i++) {
+			let hasMatch = false;
+			
+			let fields = students[i].getElementsByTagName("td");
+			for(let j = 0; j < fields.length; j++) {
+				const fieldText = fields[j].innerText.toLowerCase();
+				if(fieldText.indexOf(filter) > -1)
+					hasMatch = true;
+			}
+
+			if(hasMatch)
+				students[i].style.display = "";
+			else
+				students[i].style.display = "none";
+		}
+	}
+
 	return (
 		<div className="gray-background">
 			<Container fluid>
@@ -47,7 +68,7 @@ const Students = () => {
 								<h4 className="me-4">Alumnos</h4>
 								<div className="w-100 search-container">
 									<span className="bi"><Search /></span>
-									<input type="text" placeholder="Busca por nombre, email o palabra clave..." className="search-input" />
+									<input type="text" placeholder="Busca por nombre, email o palabra clave..." className="search-input" onKeyUp={(e) => handleSearch(e)} />
 								</div>
 								<button className="btn add-student-btn"><PlusLg /> Añadir alumnos</button>
 							</div>
