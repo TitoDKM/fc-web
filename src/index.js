@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './views/Login/Login';
+import Students from './views/Students/Students';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/styles.css';
 
 ReactDOM.render(
@@ -12,6 +12,7 @@ ReactDOM.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/alumnos" element={<Students />} />
         <Route path="*" element={<h1>Página no encontrada</h1>} />
       </Routes>
     </BrowserRouter>
