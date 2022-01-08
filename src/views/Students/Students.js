@@ -1,12 +1,30 @@
+import { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { ArrowDownUp, ChevronLeft, ChevronRight, PlusLg, Search, TrashFill, X } from 'react-bootstrap-icons';
 
 import './students.css';
 
 const Students = () => {
+	const [asc, setAsc] = useState(false);
+
+	const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+	const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+	const handleSort = (e) => {
+		const newAsc = !asc;
+		setAsc(newAsc);
+		const th = e.target;
+		const table = document.getElementById('table-body');
+		Array.from(table.querySelectorAll('tr:nth-child(n+1)'))
+			.sort(comparer(Array.from(th.parentNode.children).indexOf(th), newAsc))
+			.forEach(tr => table.appendChild(tr));
+	}
 
 	return (
-		<div class="gray-background">
+		<div className="gray-background">
 			<Container fluid>
 				<nav className="navbar">
 					<a className="navbar-brand text-black" href="/">OpenBootcamp <span>| Alumnos</span></a>
@@ -37,15 +55,15 @@ const Students = () => {
 								<table className="table students-table">
 									<thead>
 										<tr>
-											<td style={{paddingLeft: '20px'}}>Nombre <ArrowDownUp /></td>
-											<td>Ciudad <ArrowDownUp /></td>
-											<td>País <ArrowDownUp /></td>
-											<td>Teléfono <ArrowDownUp /></td>
-											<td>Correo electrónico <ArrowDownUp /></td>
-											<td>Etiquetas <ArrowDownUp /></td>
+											<th onClick={(e) => handleSort(e)} style={{paddingLeft: '20px'}}>Nombre <ArrowDownUp /></th>
+											<th onClick={(e) => handleSort(e)}>Ciudad <ArrowDownUp /></th>
+											<th onClick={(e) => handleSort(e)}>País <ArrowDownUp /></th>
+											<th onClick={(e) => handleSort(e)}>Teléfono <ArrowDownUp /></th>
+											<th onClick={(e) => handleSort(e)}>Correo electrónico <ArrowDownUp /></th>
+											<th onClick={(e) => handleSort(e)}>Etiquetas <ArrowDownUp /></th>
 										</tr>
 									</thead>
-									<tbody style={{borderTop: 'none'}}>
+									<tbody style={{borderTop: 'none'}} id="table-body">
 										<tr>
 											<th style={{paddingLeft: '20px'}}>Álvaro Sánchez Monteagudo</th>
 											<td>Valencia</td>

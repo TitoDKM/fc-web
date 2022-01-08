@@ -112,11 +112,12 @@ input[type="text"]:hover, input[type="select"]:hover {
 	border-radius: 20px;
 }
 
-.students-table thead td {
+.students-table thead th {
 	text-transform: uppercase;
 	color: #A5A8B3;
     font-weight: bold;
     font-size: 15px;
+	cursor: pointer;
 }
 
 #tags span {

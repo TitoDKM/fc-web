@@ -8,20 +8,20 @@ const Login = () => {
 			<Row className="h-100">
 				<Col lg="4" md="9" className="d-flex justify-content-center">
 					<div className="loginBox w-75">
-						<h4 class="loginTitle mb-5">OpenBootcamp <span>| Alumnos</span></h4>
+						<h4 className="loginTitle mb-5">OpenBootcamp <span>| Alumnos</span></h4>
 						<Form className="loginForm">
 							<div className="mb-4">
-								<label for="email" className="form-label fwBold">Email</label>
+								<label htmlFor="email" className="form-label fwBold">Email</label>
 								<input type="email" className="form-control" id="email" placeholder="Correo electrónico" />
 							</div>
 							<div className="mb-3">
-								<label for="password" className="form-label fwBold">Contraseña</label>
+								<label htmlFor="password" className="form-label fwBold">Contraseña</label>
 								<input type="password" className="form-control" id="password" placeholder="Introduce tu contraseña" />
 							</div>
 							<div className="mb-3">
 								<div className="form-check">
 									<input className="form-check-input" type="checkbox" id="remember" />
-									<label className="form-check-label rememberLabel" for="remember">Recuérdame</label>
+									<label className="form-check-label rememberLabel" htmlFor="remember">Recuérdame</label>
 								</div>
 								<a href="#" className="forgottenPassword">
 									He olvidado la contraseña
