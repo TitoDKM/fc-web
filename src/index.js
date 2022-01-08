@@ -6,6 +6,7 @@ import Login from './views/Login/Login';
 import Students from './views/Students/Students';
 
 import './assets/styles.css';
+import Student from './views/Student/Student';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -13,6 +14,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/alumnos" element={<Students />} />
+        <Route path="/alumno" element={<Student />} />
         <Route path="*" element={<h1>Página no encontrada</h1>} />
       </Routes>
     </BrowserRouter>
