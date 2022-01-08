@@ -8,4 +8,4 @@
 - [https://react-bootstrap.netlify.app/](React-Bootstrap)
 - [https://developer.snapappointments.com/bootstrap-select/](Bootstrap-Select)
 ## Live Preview
-[https://daboy.me/ob/sprint3-react/](https://daboy.me/ob/sprint3-react/)
+[https://react.daboy.me/](https://react.daboy.me/)
