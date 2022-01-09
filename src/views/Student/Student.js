@@ -104,6 +104,9 @@ const Student = () => {
 							</div>
 						</div>
 					</div>
+					<div className="col-8">
+						<iframe src="cv.pdf" height="100%" width="100%"></iframe>
+					</div>
 				</Row>
 			</Container>
 		</div>
