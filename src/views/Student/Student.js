@@ -1,9 +1,24 @@
+import { useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import { CloudArrowUp, GeoAlt, Trash, X } from "react-bootstrap-icons";
 
 import './student.css';
 
 const Student = () => {
+	const [currentTags, setCurrentTags] = useState([{id: 2, title: 'HTML&CSS'}, {id: 3, title: 'React'}, {id: 6, title: 'Angular'}]);
+
+	const handleChange = (e) => {
+		const clickedIndex = e.target.value;
+		const tagValue = document.getElementById('tagsSelect').options[clickedIndex].text;
+		if(!currentTags.find(tag => tag.title.includes(tagValue.includes("HTML") ? "HTML" : tagValue)))
+			setCurrentTags([...currentTags, {id: clickedIndex, title: tagValue}]);
+	}
+
+	const handleItemClick = (item) => {
+		const newTags = currentTags.filter(tag => tag.id !== item.id);
+		setCurrentTags(newTags);
+	}
+
 	return (
 		<div className="gray-background">
 			<Container fluid>
@@ -74,15 +89,18 @@ const Student = () => {
 								</div>
 							</div>
 							<div>
-								<label for="tagsSelect" className="form-label">Etiquetas</label>
-								<select className="selectpicker w-100" id="tagsSelect" data-live-search="true" title="Escribe para buscar...">
-									<option value="js">JavaScript</option>
-									<option value="html">HTML&CSS</option>
-									<option value="react">React</option>
+								<label htmlFor="tagsSelect" className="form-label">Etiquetas</label>
+								<select className="selectpicker w-100" id="tagsSelect" data-live-search="true" title="Escribe para buscar..." onChange={(e) => handleChange(e)}>
+									<option value="1">JavaScript</option>
+									<option value="2">HTML&CSS</option>
+									<option value="3">React</option>
+									<option value="4">C#</option>
+									<option value="5">PHP</option>
+									<option value="6">Angular</option>
 								</select>
 							</div>
 							<div className="mt-3" id="search-tags">
-							<span>HTML&CSS <X /></span><span>React <X /></span><span>Angular <X /></span>
+								{currentTags.map(tag => <span id={"tag-" + tag.id} key={tag.id}>{tag.title} <X id={tag.id} onClick={(e) => handleItemClick(e.target)} /></span>)}
 							</div>
 						</div>
 					</div>
