@@ -53,7 +53,7 @@ h4, h5 {
 input[type="text"]:focus, input[type="select"]:focus,
 input[type="text"]:focus-visible, input[type="select"]:focus-visible,
 input[type="text"]:hover, input[type="select"]:hover {
-	background-color: #F8F8F9;
+	/*background-color: #F8F8F9;*/
     border: none;
     border-radius: 8px;
 	box-shadow: none;

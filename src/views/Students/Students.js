@@ -1,11 +1,78 @@
-import { useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import axios from 'axios';
+import { useContext, useEffect, useState } from 'react';
+import { Alert, Col, Container, Row } from 'react-bootstrap';
 import { ArrowDownUp, ChevronLeft, ChevronRight, PlusLg, Search, TrashFill, X } from 'react-bootstrap-icons';
+import { appContext } from '../..';
+import { LOAD_STUDENTS, LOAD_STUDENTS_ERROR, LOAD_STUDENTS_SUCCESS, LOGOUT, RESET_ERRORS } from '../../reducers/AppReducer';
+import { getStudents } from '../../services/studentsService';
 
 import './students.css';
 
 const Students = () => {
+	const { state, dispatch }  = useContext(appContext);
 	const [asc, setAsc] = useState(false);
+	const [totalStudents, setTotalStudents] = useState(0);
+	const [currentPage, setCurrentPage] = useState(0);
+	const [totalPages, setTotalPages] = useState(0);
+	const [students, setStudents] = useState([]);
+	const [search, setSearch] = useState('');
+
+	useEffect(() => {
+		dispatch({type: LOAD_STUDENTS});
+		getStudents(0, 25, '', state.token)
+		.then(response => {
+			dispatch({type: LOAD_STUDENTS_SUCCESS});
+			setStudents(response.data.students);
+			setTotalStudents(response.data.total);
+			setCurrentPage(response.data.current + 1);
+			setTotalPages(response.data.pages);
+		})
+		.catch(error => {
+			if(error.response && error.response.status === 403){ 
+				dispatch({type: LOGOUT});
+			} else if(error.response && error.response.status === 400) {
+				dispatch({type: LOAD_STUDENTS_ERROR, error: error.response.data});
+			} else {
+				dispatch({type: LOAD_STUDENTS_ERROR, error: 'Error al obtener los datos del servidor'});
+			}
+		});
+	}, []);
+
+	const nextPage = () => {
+		if(currentPage < totalPages && currentPage != totalPages) {
+			dispatch({type: LOAD_STUDENTS});
+			getStudents(currentPage, 25, search, state.token)
+			.then(response => {
+				dispatch({type: LOAD_STUDENTS_SUCCESS});
+				setStudents(response.data.students);
+				setTotalStudents(response.data.total);
+				setCurrentPage(response.data.current + 1);
+				setTotalPages(response.data.pages);
+			})
+			.catch(error => {
+				if(error.response && error.response.status === 403)
+					dispatch({type: LOGOUT});
+			});
+		}
+	}
+
+	const prevPage = () => {
+		if(currentPage > 1 && currentPage <= totalPages) {
+			dispatch({type: LOAD_STUDENTS});
+			getStudents(currentPage - 2, 25, search, state.token)
+			.then(response => {
+				dispatch({type: LOAD_STUDENTS_SUCCESS});
+				setStudents(response.data.students);
+				setTotalStudents(response.data.total);
+				setCurrentPage(response.data.current + 1);
+				setTotalPages(response.data.pages);
+			})
+			.catch(error => {
+				if(error.response && error.response.status === 403)
+					dispatch({type: LOGOUT});
+			});
+		}
+	}
 
 	const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
@@ -25,23 +92,24 @@ const Students = () => {
 
 	const handleSearch = (e) => {
 		const filter = e.target.value.toLowerCase();
-		let students = document.getElementById('table-body').getElementsByTagName('tr');
-
-		for(let i = 0; i < students.length; i++) {
-			let hasMatch = false;
-			
-			let fields = students[i].getElementsByTagName("td");
-			for(let j = 0; j < fields.length; j++) {
-				const fieldText = fields[j].innerText.toLowerCase();
-				if(fieldText.indexOf(filter) > -1)
-					hasMatch = true;
+		setSearch(filter);
+		getStudents(0, 25, filter, state.token)
+		.then(response => {
+			dispatch({type: LOAD_STUDENTS_SUCCESS});
+			setStudents(response.data.students);
+			setTotalStudents(response.data.total);
+			setCurrentPage(response.data.current + 1);
+			setTotalPages(response.data.pages);
+		})
+		.catch(error => {
+			if(error.response && error.response.status === 403){ 
+				dispatch({type: LOGOUT});
+			} else if(error.response && error.response.status === 400) {
+				dispatch({type: LOAD_STUDENTS_ERROR, error: error.response.data});
+			} else {
+				dispatch({type: LOAD_STUDENTS_ERROR, error: 'Error al obtener los datos del servidor'});
 			}
-
-			if(hasMatch)
-				students[i].style.display = "";
-			else
-				students[i].style.display = "none";
-		}
+		});
 	}
 
 	return (
@@ -72,6 +140,7 @@ const Students = () => {
 								</div>
 								<button className="btn add-student-btn"><PlusLg /> Añadir alumnos</button>
 							</div>
+								{state.error && (<Alert variant="danger" className="mt-4">{state.error}</Alert>)}
 							<div className="table-content mt-4">
 								<table className="table students-table">
 									<thead>
@@ -84,104 +153,29 @@ const Students = () => {
 											<th onClick={(e) => handleSort(e)}>Etiquetas <ArrowDownUp /></th>
 										</tr>
 									</thead>
-									<tbody style={{borderTop: 'none'}} id="table-body">
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Álvaro Sánchez Monteagudo</th>
-											<td>Valencia</td>
-											<td>España</td>
-											<td>+34 657 85 25 46</td>
-											<td>smonteagudo@gmail.com</td>
-											<td id="tags"><span>HTML&CSS</span><span>Angular</span><span>+2</span></td>
-										</tr>
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Amparo Herrera Climent</th>
-											<td>Sevilla</td>
-											<td>España</td>
-											<td>+34 689 25 48 65</td>
-											<td>hcliment@gmail.com</td>
-											<td id="tags"><span>React</span><span>Angular</span><span>+2</span></td>
-										</tr>
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Ana Gutierrez Lozano</th>
-											<td>Valencia</td>
-											<td>España</td>
-											<td>+34 925 65 87 65</td>
-											<td>glozano@gmail.com</td>
-											<td id="tags"><span>React</span><span>Angular</span><span>+2</span></td>
-										</tr>
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Antonio Miguel Lacambra</th>
-											<td>Madrid</td>
-											<td>España</td>
-											<td>+34 658 95 24 56</td>
-											<td>mlacunza@gmail.com</td>
-											<td id="tags"><span>HTML</span><span>Angular</span><span>+2</span></td>
-										</tr>
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Antonio Delgado Jimeno</th>
-											<td>Gijón</td>
-											<td>España</td>
-											<td>+34 925 65 54 25</td>
-											<td>djimeno@gmail.com</td>
-											<td id="tags"><span>HTML&CSS</span><span>React</span><span>+2</span></td>
-										</tr>
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Belén Jerez Rivera</th>
-											<td>Barcelona</td>
-											<td>España</td>
-											<td>+34 697 82 95 24</td>
-											<td>jrivera@gmail.com</td>
-											<td id="tags"><span>HTML</span><span>Angular</span><span>+2</span></td>
-										</tr>
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Carlos Barroso Soriano</th>
-											<td>Valencia</td>
-											<td>España</td>
-											<td>+34 958 65 41 54</td>
-											<td>bsoriano@gmail.com</td>
-											<td id="tags"><span>React</span><span>Symfony</span><span>+2</span></td>
-										</tr>
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Carlos Yuste Guerrero</th>
-											<td>Oviedo</td>
-											<td>España</td>
-											<td>+34 697 82 95 65</td>
-											<td>yguerrero@gmail.com</td>
-											<td id="tags"><span>Flutter</span><span>React</span><span>+2</span></td>
-										</tr>
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Carmina Pérez López</th>
-											<td>Jaén</td>
-											<td>España</td>
-											<td>+34 695 84 62 54</td>
-											<td>plopez@gmail.com</td>
-											<td id="tags"><span>HTML</span><span>Angular</span><span>+2</span></td>
-										</tr>
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Luis García García</th>
-											<td>Toledo</td>
-											<td>España</td>
-											<td>+34 697 82 95 65</td>
-											<td>ggarcia@gmail.com</td>
-											<td id="tags"><span>HTML</span><span>Angular</span><span>+2</span></td>
-										</tr>
-										<tr>
-											<th style={{paddingLeft: '20px'}}>Ángel Giménez Hidalgo</th>
-											<td>Sevilla</td>
-											<td>España</td>
-											<td>+34 697 82 95 24</td>
-											<td>ghidalgo@gmail.com</td>
-											<td id="tags"><span>HTML</span><span>Angular</span><span>+2</span></td>
-										</tr>
+									<tbody style={{borderTop: 'none', height: '50px', position: 'relative'}} id="table-body">
+										{state.loadingStudents && <h3 className="table-message">Cargando..</h3>}
+										{(!state.loadingStudents && students.length === 0) ? (<h3 className="table-message">Aún no hay estudiantes registrados</h3>) :
+										(<>
+											{students.map(student => (
+											<tr key={student.id}>
+												<th style={{paddingLeft: '20px'}}>{student.fullName}</th>
+												<td>{student.city}</td>
+												<td>{student.country}</td>
+												<td>{student.phone}</td>
+												<td>{student.email}</td>
+												<td id="tags"><span>HTML&CSS</span><span>Angular</span><span>+2</span></td>
+											</tr>))}
+										</>)}
 									</tbody>
 								</table>
 								<div className="table-footer position-relative">
-									<div className="students-count">1.214 alumnos en total</div>
+									<div className="students-count">Mostrando {students.length} de {totalStudents} alumnos</div>
 									<div className="pagination position-absolute top-0 start-50 translate-middle" style={{marginTop: '10px'}}>
-										<div className="pagination-left"><ChevronLeft /></div>
-										<div className="pagination-current">1</div>
-										<div className="pagination-count">de 132</div>
-										<div className="pagination-right"><ChevronRight /></div>
+										<div className="pagination-left" className={((currentPage > 1 && currentPage <= totalPages) ? 'pointer-cursor' : '')} onClick={prevPage}><ChevronLeft /></div>
+										<div className="pagination-current">{currentPage}</div>
+										<div className="pagination-count">de {totalPages}</div>
+										<div className="pagination-right" className={((currentPage < totalPages && currentPage != totalPages) ? 'pointer-cursor' : '')} onClick={nextPage}><ChevronRight /></div>
 									</div>
 								</div>
 							</div>

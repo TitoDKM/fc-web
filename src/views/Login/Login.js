@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext, useRef, useState } from "react";
 import { Button, Col, Container, Form, Row, Alert } from "react-bootstrap";
 import { appContext } from "../..";
-import { ERROR, LOGIN, SUCCESS, TOKEN } from "../../reducers/AppReducer";
+import { ERROR, LOGIN, RESET_ERRORS, SUCCESS, TOKEN } from "../../reducers/AppReducer";
 import { login } from "../../services/loginService";
 
 import './login.css';
@@ -13,6 +13,7 @@ const Login = () => {
 	const { state, dispatch }  = useContext(appContext);
 
 	const tryLogin = (e) => {
+		dispatch({type: RESET_ERRORS});
 		e.preventDefault();
 		
 		dispatch({type: LOGIN});
@@ -61,7 +62,7 @@ const Login = () => {
 									He olvidado la contraseña
 								</a>
 							</div>
-							<Button type="submit" variant="none" className="loginButton w-100" onClick={(e) => tryLogin(e)} disabled={state.loading}>{state.loading ? 'Iniciando sesión... ' : 'Iniciar sesión'}</Button>
+							<Button type="submit" variant="none" className="loginButton w-100" onClick={(e) => tryLogin(e)} disabled={state.loging}>{state.loging ? 'Iniciando sesión... ' : 'Iniciar sesión'}</Button>
 							<div className="footer">
 								Copyright &copy; 2021 Open Bootcamp SL, Imagina Group<br />
 								Todos los derechos reservados.<br />
